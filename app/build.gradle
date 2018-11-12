@@ -39,7 +39,6 @@ dependencies {
     implementation project(':AndroidSDK')
     //https://github.com/XRecyclerView/XRecyclerView
     implementation 'com.jcodecraeer:xrecyclerview:1.5.9'
-
     implementation "io.reactivex.rxjava2:rxjava:$rxjavaVersion"
     implementation "io.reactivex.rxjava2:rxandroid:$rxandroidVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$logginginterceptor"
@@ -50,4 +49,5 @@ dependencies {
     implementation "com.alibaba:fastjson:$fastJsonVersion"
     //https://github.com/jpardogo/PagerSlidingTabStrip
     implementation 'com.jpardogo.materialtabstrip:library:1.1.1'
+    implementation files('libs/commons-net-3.6.jar')
 }
