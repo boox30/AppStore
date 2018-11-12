@@ -4,9 +4,9 @@ package com.yunarm.appstore;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
-import com.yunarm.appstore.interfaces.FtpConnectStateListener;
-import com.yunarm.appstore.interfaces.FtpDownLoadListener;
-import com.yunarm.appstore.utils.FTPManager;
+import com.yunarm.appstore.ftp.FtpConnectStateListener;
+import com.yunarm.appstore.ftp.FtpDownLoadListener;
+import com.yunarm.appstore.ftp.FTPManager;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

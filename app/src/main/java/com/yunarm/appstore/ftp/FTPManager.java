@@ -1,9 +1,6 @@
-package com.yunarm.appstore.utils;
+package com.yunarm.appstore.ftp;
 
 import android.util.Log;
-
-import com.yunarm.appstore.interfaces.FtpDownLoadListener;
-import com.yunarm.appstore.interfaces.FtpConnectStateListener;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
