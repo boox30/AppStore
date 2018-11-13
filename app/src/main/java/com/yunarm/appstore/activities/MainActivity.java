@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
     private PagerSlidingTabStrip tabs;
     private ViewPager viewPager;
     private ViewPager.OnPageChangeListener vpListener;
+    private String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         vpListener = new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
-                
+
             }
 
             @Override
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         tabs.setViewPager(viewPager);
         tabs.setOnPageChangeListener(vpListener);
     }
+
 
     private List<BaseLazyFragment> initFragments() {
         ArrayList<BaseLazyFragment> list = new ArrayList<>();

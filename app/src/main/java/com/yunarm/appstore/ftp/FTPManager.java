@@ -2,6 +2,8 @@ package com.yunarm.appstore.ftp;
 
 import android.util.Log;
 
+import com.yunarm.appstore.utils.FtpConfigUtils;
+
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPClientConfig;
@@ -16,20 +18,34 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class FTPManager {
     FTPClient ftpClient = null;
     private static final String TAG = "FTPManager";
+    private String config = "/data/local/one/manage.conf";
 
     public FTPManager() {
         ftpClient = new FTPClient();
     }
 
+    public boolean connectByConfig(FtpConnectStateListener ftpListener) {
+        HashMap<String, String> map = FtpConfigUtils.readContentOfFile(new File(config));
+        try {
+            return this.connect(map.get(FtpConfigUtils.IP), Integer.parseInt(map.get(FtpConfigUtils.PORT)), map.get(FtpConfigUtils.USER_NAME), map.get(FtpConfigUtils.PWD), ftpListener);
+        } catch (Exception e) {
+            Log.e(TAG, "error!!", e);
+        }
+        return false;
+    }
+
     // 连接到ftp服务器
     public synchronized boolean connect(String ip, int port, String user, String pwd, FtpConnectStateListener ftpListener) throws Exception {
+        HashMap<String, String> stringStringHashMap = FtpConfigUtils.readContentOfFile(new File("/data/local/one/manage.conf"));
         boolean bool = false;
         if (ftpClient.isConnected()) {
+//            return true;
             ftpClient.disconnect();
         }
         ftpClient.setConnectTimeout(15000);//设置连接超时时间
@@ -38,14 +54,26 @@ public class FTPManager {
         if (FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
             if (ftpClient.login(user, pwd)) {
                 bool = true;
-                Log.d("tag", "ftp连接成功");
+                Log.d(TAG, "ftp连接成功");
                 ftpListener.onLoginSucc(true);
             } else {
-                Log.d("tag", "ftp 不成功");
+                Log.d(TAG, "ftp 不成功");
                 ftpListener.onLoginSucc(false);
             }
         }
         return bool;
+    }
+
+    public boolean isConnected() {
+        return ftpClient.isConnected();
+    }
+
+    public void disConnectFtp() {
+        try {
+            ftpClient.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // 实现下载文件功能，可实现断点下载
@@ -60,7 +88,7 @@ public class FTPManager {
         ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
         FTPFile[] files = ftpClient.listFiles();
         if (files.length == 0) {
-            Log.d("tag", "服务器文件不存在");
+            Log.d(TAG, "服务器文件不存在");
             return false;
         }
         FTPFile ftpFile = null;
@@ -91,6 +119,8 @@ public class FTPManager {
             Log.d(TAG, "=======本地文件存在=====localSize: " + localSize + " serverSize:" + serverSize);
             if (localSize >= serverSize) {
                 Log.d(TAG, "文件已经下载完了");
+                listener.onDownProgress(100);
+                listener.onDownloadSucc(localFile.getAbsolutePath());
                 return true;
             }
         }
@@ -111,7 +141,91 @@ public class FTPManager {
                 process = currentSize / step;
                 if (process % 10 == 0) {
                     listener.onDownProgress(process);
-                    Log.d("tag", "下载进度：" + process);
+                    Log.d(TAG, " ====file name:" + ftpFile.getName() + "===下载进度：" + process);
+                }
+            }
+        }
+        out.flush();
+        out.close();
+        input.close();
+        // 此方法是来确保流处理完毕，如果没有此方法，可能会造成现程序死掉
+        if (ftpClient.completePendingCommand()) {
+            Log.d(TAG, "文件下载成功");
+            listener.onDownloadSucc(localFile.getAbsolutePath());
+            return true;
+        } else {
+            Log.d(TAG, "文件下载失败");
+            listener.onDownloadFail();
+            return false;
+        }
+    }
+
+    // 实现下载文件功能，可实现断点下载
+    public synchronized boolean downloadFileByMutiThread(String localPath, String serverPath, FtpDownLoadListener listener)
+            throws Exception {
+        // 先判断服务器文件是否存在
+        File serverFile = new File(serverPath);
+        ftpClient.changeWorkingDirectory(serverFile.getParentFile().getAbsolutePath());
+        ftpClient.configure(new FTPClientConfig(FTPClientConfig.SYST_UNIX));
+        ftpClient.setControlEncoding("UTF-8");
+        ftpClient.enterLocalPassiveMode();
+        ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+        FTPFile[] files = ftpClient.listFiles();
+        if (files.length == 0) {
+            Log.d(TAG, "服务器文件不存在");
+            return false;
+        }
+        FTPFile ftpFile = null;
+        for (int i = 0; i < files.length; i++) {
+            String name = serverFile.getName();
+            if (files[i].getName().equals(name)) {
+                ftpFile = files[i];
+                break;
+            }
+        }
+        Log.d(TAG, "远程文件存在,名字为：" + ftpFile.getName());
+
+        //创建本地文件夹
+        File mkFile = new File(localPath);
+        if (!mkFile.exists()) {
+            mkFile.mkdirs();
+        }
+
+        //本地文件名
+        String localFilePath = localPath + ftpFile.getName();
+
+        // 接着判断下载的文件是否能断点下载
+        long serverSize = ftpFile.getSize(); // 获取远程文件的长度
+        File localFile = new File(localFilePath);
+        long localSize = 0;
+        if (localFile.exists()) {
+            localSize = localFile.length(); // 如果本地文件存在，获取本地文件的长度
+            Log.d(TAG, "=======本地文件存在=====localSize: " + localSize + " serverSize:" + serverSize);
+            if (localSize >= serverSize) {
+                Log.d(TAG, "文件已经下载完了");
+                listener.onDownProgress(100);
+                listener.onDownloadSucc(localFile.getAbsolutePath());
+                return true;
+            }
+        }
+        // 进度
+        long step = serverSize / 100;
+        long process = 0;
+        long currentSize = localSize;
+        // 开始准备下载文件
+        OutputStream out = new FileOutputStream(localFile, true);
+        ftpClient.setRestartOffset(localSize);
+        InputStream input = ftpClient.retrieveFileStream(serverPath);
+        byte[] b = new byte[1024];
+        int length = 0;
+        while ((length = input.read(b)) != -1) {
+            out.write(b, 0, length);
+            currentSize = currentSize + length;
+            if (currentSize / step != process) {
+                process = currentSize / step;
+                if (process % 10 == 0) {
+                    listener.onDownProgress(process);
+                    Log.d(TAG, "下载进度：" + process);
                 }
             }
         }
