@@ -8,6 +8,7 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.william.androidsdk.baseui.BaseLazyFragment;
 import com.yunarm.appstore.R;
 import com.yunarm.appstore.adapters.ViewPagerFragmentAdapter;
+import com.yunarm.appstore.fragments.AppTypeFragment;
 import com.yunarm.appstore.fragments.CommonAppsFragment;
 
 import java.util.ArrayList;
@@ -56,15 +57,11 @@ public class MainActivity extends AppCompatActivity {
 
     private List<BaseLazyFragment> initFragments() {
         ArrayList<BaseLazyFragment> list = new ArrayList<>();
-        CommonAppsFragment a = new CommonAppsFragment("aaaa");
-        CommonAppsFragment b = new CommonAppsFragment("bbbb");
-        CommonAppsFragment c = new CommonAppsFragment("cccc");
-        CommonAppsFragment d = new CommonAppsFragment("dddd");
+        AppTypeFragment a = new AppTypeFragment("应用");
+        AppTypeFragment b = new AppTypeFragment("游戏");
 
         list.add(a);
         list.add(b);
-        list.add(c);
-        list.add(d);
 
         return list;
 

@@ -5,11 +5,6 @@
     android:layout_height="match_parent"
     tools:context=".fragments.CommonAppsFragment">
 
-    <TextView
-        android:layout_width="50dp"
-        android:id="@+id/ffff"
-        android:text="ffffffffffff"
-        android:layout_height="50dp" />
     <com.jcodecraeer.xrecyclerview.XRecyclerView
         android:id="@+id/common_app_content"
         android:layout_width="match_parent"

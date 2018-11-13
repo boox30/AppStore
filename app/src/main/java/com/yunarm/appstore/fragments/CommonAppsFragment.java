@@ -28,8 +28,6 @@ public class CommonAppsFragment extends BaseLazyFragment {
     @Override
     protected void initView() {
         recyclerView = findViewById(R.id.common_app_content);
-        viewById = findViewById(R.id.ffff);
-        viewById.setText(type);
     }
 
     @Override
