@@ -19,12 +19,11 @@ android {
 }
 
 ext {
-    retrofitVersion = '2.3.0'
+    retrofitVersion = '2.4.0'
     logginginterceptor = '3.9.1'
     rxjavaVersion = '2.1.11'
     rxandroidVersion = "2.0.2"
     eventBusVersion = "3.0.0"
-    fastJsonVersion = "1.2.49"
 
 }
 
@@ -46,7 +45,6 @@ dependencies {
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     implementation "org.greenrobot:eventbus:$eventBusVersion"
-    implementation "com.alibaba:fastjson:$fastJsonVersion"
     //https://github.com/jpardogo/PagerSlidingTabStrip
     implementation 'com.jpardogo.materialtabstrip:library:1.1.1'
     implementation files('libs/commons-net-3.6.jar')

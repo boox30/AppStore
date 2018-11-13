@@ -1,13 +1,20 @@
 package com.yunarm.appstore;
 
 
+import android.content.Context;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.yunarm.appstore.api.GetAppTypeList;
+import com.yunarm.appstore.bean.AppTypeInfo;
+import com.yunarm.appstore.bean.PostResult;
 import com.yunarm.appstore.ftp.FTPManager;
 import com.yunarm.appstore.ftp.FtpConnectStateListener;
 import com.yunarm.appstore.ftp.FtpDownLoadListener;
 import com.yunarm.appstore.ftp.FtpManagerTasks;
+import com.yunarm.appstore.http.HttpUtils;
 import com.yunarm.appstore.utils.FtpConfigUtils;
 
 import org.junit.Test;
@@ -16,10 +23,16 @@ import org.junit.runner.RunWith;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -31,9 +44,11 @@ public class AppStoreTest {
 
     static {
         ftpManager = new FTPManager();
+        appContext = InstrumentationRegistry.getTargetContext();
     }
 
     private ArrayList<String> list;
+    private static Context appContext;
 
     @Test
     public void testLoginFtp() {
@@ -112,7 +127,7 @@ public class AppStoreTest {
 
 
                 //for (int i = 0; i < list.size(); i++) {
-                    downLoadSimpleFile(instance, list.get(0), downLatch);
+                downLoadSimpleFile(instance, list.get(0), downLatch);
 //                    downLoadSimpleFile(instance, list.get(1), downLatch);
 //                    downLoadSimpleFile(instance, list.get(2), downLatch);
                 //}
@@ -122,7 +137,7 @@ public class AppStoreTest {
         downLatch.await();
     }
 
-    private void downLoadSimpleFile(FtpManagerTasks instance,String remoteFile, final CountDownLatch downLatch) {
+    private void downLoadSimpleFile(FtpManagerTasks instance, String remoteFile, final CountDownLatch downLatch) {
         instance.getFtpFileByPathTask("/sdcard/", remoteFile, new FtpDownLoadListener() {
             @Override
             public void onDownProgress(long progress) {
@@ -147,6 +162,30 @@ public class AppStoreTest {
                 downLatch.countDown();
             }
         });
+    }
+
+    @Test
+    public void testRequestAppTypes() {
+        GetAppTypeList listService = HttpUtils.createAppTypeListService(appContext);
+        listService
+                .getApplistResult(String.valueOf(2))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<PostResult>() {
+                    @Override
+                    public void accept(PostResult postResult) throws Exception {
+                        assertNotNull(postResult);
+                        assertEquals(postResult.isStatus(), true);
+
+                        String str = "{\"status\":true,\"message\":" + postResult.getMessage() + "}";
+                        Gson gson = new Gson();
+                        AppTypeInfo appTypeInfo = gson.fromJson(str, AppTypeInfo.class);
+                        List<AppTypeInfo.MessageBean> message = appTypeInfo.getMessage();
+                        assertNotNull(message);
+                        assertTrue(message.size() >= 1);
+                    }
+                });
+
     }
 
 }
