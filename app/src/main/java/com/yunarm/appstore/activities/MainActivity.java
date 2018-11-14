@@ -9,7 +9,8 @@ import com.william.androidsdk.baseui.BaseLazyFragment;
 import com.yunarm.appstore.R;
 import com.yunarm.appstore.adapters.ViewPagerFragmentAdapter;
 import com.yunarm.appstore.fragments.AppTypeFragment;
-import com.yunarm.appstore.fragments.CommonAppsFragment;
+import com.yunarm.appstore.http.AppListHelper;
+import com.yunarm.appstore.http.LoadFinishCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,24 +48,34 @@ public class MainActivity extends AppCompatActivity {
         };
         tabs = findViewById(R.id.tabs);
         viewPager = findViewById(R.id.view_pager);
-        initFragments();
-        ViewPagerFragmentAdapter adapter = new ViewPagerFragmentAdapter(getSupportFragmentManager(), initFragments());
-        viewPager.setAdapter(adapter);
-        tabs.setViewPager(viewPager);
-        tabs.setOnPageChangeListener(vpListener);
+        stepFragmentsWithViewPager();
+
     }
 
 
-    private List<BaseLazyFragment> initFragments() {
-        ArrayList<BaseLazyFragment> list = new ArrayList<>();
-        AppTypeFragment a = new AppTypeFragment("应用");
-        AppTypeFragment b = new AppTypeFragment("游戏");
+    private void stepFragmentsWithViewPager() {
+        final ArrayList<BaseLazyFragment> list = new ArrayList<>();
+        final AppListHelper instance = AppListHelper.getInstance();
+        instance.getAppTypeData(this, new LoadFinishCallback() {
+            @Override
+            public void onLoadDataFinish() {
+                List<String> bigTypes = instance.getBigTypes();
+                AppTypeFragment fragment;
+                for (int i = 0; i < bigTypes.size(); i++) {
+                    String type = bigTypes.get(i);
+                    fragment = new AppTypeFragment(type);
+                    Bundle args = new Bundle();
+                    args.putParcelableArrayList(AppListHelper.DATA_LIST_TAG, instance.getTypes(type));
+                    fragment.setArguments(args);
+                    list.add(fragment);
+                }
 
-        list.add(a);
-        list.add(b);
-
-        return list;
-
+                ViewPagerFragmentAdapter adapter = new ViewPagerFragmentAdapter(getSupportFragmentManager(), list);
+                viewPager.setAdapter(adapter);
+                tabs.setViewPager(viewPager);
+                tabs.setOnPageChangeListener(vpListener);
+            }
+        });
     }
 
 }

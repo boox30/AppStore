@@ -1,5 +1,8 @@
 package com.yunarm.appstore.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 public class AppTypeInfo {
@@ -73,7 +76,7 @@ public class AppTypeInfo {
             this.children = children;
         }
 
-        public static class ChildrenBeanX {
+        public static class ChildrenBeanX implements Parcelable{
             /**
              * id : 2
              * name : 系统工具
@@ -85,6 +88,24 @@ public class AppTypeInfo {
             private String name;
             private boolean disabled;
             private List<ChildrenBean> children;
+
+            protected ChildrenBeanX(Parcel in) {
+                id = in.readInt();
+                name = in.readString();
+                disabled = in.readByte() != 0;
+            }
+
+            public static final Creator<ChildrenBeanX> CREATOR = new Creator<ChildrenBeanX>() {
+                @Override
+                public ChildrenBeanX createFromParcel(Parcel in) {
+                    return new ChildrenBeanX(in);
+                }
+
+                @Override
+                public ChildrenBeanX[] newArray(int size) {
+                    return new ChildrenBeanX[size];
+                }
+            };
 
             public int getId() {
                 return id;
@@ -118,7 +139,19 @@ public class AppTypeInfo {
                 this.children = children;
             }
 
-            public static class ChildrenBean {
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeInt(id);
+                dest.writeString(name);
+                dest.writeByte((byte) (disabled ? 1 : 0));
+            }
+
+            public static class ChildrenBean implements Parcelable {
                 /**
                  * id : 3
                  * name : 输入法
@@ -126,6 +159,23 @@ public class AppTypeInfo {
 
                 private int id;
                 private String name;
+
+                protected ChildrenBean(Parcel in) {
+                    id = in.readInt();
+                    name = in.readString();
+                }
+
+                public static final Creator<ChildrenBean> CREATOR = new Creator<ChildrenBean>() {
+                    @Override
+                    public ChildrenBean createFromParcel(Parcel in) {
+                        return new ChildrenBean(in);
+                    }
+
+                    @Override
+                    public ChildrenBean[] newArray(int size) {
+                        return new ChildrenBean[size];
+                    }
+                };
 
                 public int getId() {
                     return id;
@@ -141,6 +191,17 @@ public class AppTypeInfo {
 
                 public void setName(String name) {
                     this.name = name;
+                }
+
+                @Override
+                public int describeContents() {
+                    return 0;
+                }
+
+                @Override
+                public void writeToParcel(Parcel dest, int flags) {
+                    dest.writeInt(id);
+                    dest.writeString(name);
                 }
             }
         }
