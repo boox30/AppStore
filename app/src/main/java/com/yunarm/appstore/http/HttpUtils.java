@@ -97,7 +97,7 @@ public class HttpUtils {
         return getRetrofit(URL_BASE + "front_app_category/", context).create(GetAppTypeListService.class);
     }
 
-    public static GetAppTypeListService createSmallAppTypeListService(Context context) {
+    public static GetAppTypeListService createAppInfoListService(Context context) {
         return getRetrofit(URL_BASE + "front_app_list/", context).create(GetAppTypeListService.class);
     }
 }

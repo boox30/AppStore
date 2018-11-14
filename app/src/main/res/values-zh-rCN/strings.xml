@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">AppStore</string>
+    <string name="search">Search</string>
+    <string name="install_app">安装</string>
+    <string name="installing">正在安装</string>
+    <string name="downloading">正在下载</string>
+    <string name="wait_download">等待下载</string>
+</resources>

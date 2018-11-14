@@ -45,7 +45,7 @@ public class FtpConfigUtils {
                 }
                 sb.append(line);
             }
-            Log.i(TAG, "Config file's content is: " + sb.toString());
+//            Log.i(TAG, "Config file's content is: " + sb.toString());
             return map;
         } catch (IOException e) {
             e.printStackTrace();

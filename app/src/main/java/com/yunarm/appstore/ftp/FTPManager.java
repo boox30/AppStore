@@ -99,6 +99,10 @@ public class FTPManager {
                 break;
             }
         }
+        if (ftpFile == null) {
+            Log.e(TAG, "========ftpFile is null");
+            return false;
+        }
         Log.d(TAG, "远程文件存在,名字为：" + ftpFile.getName());
 
         //创建本地文件夹

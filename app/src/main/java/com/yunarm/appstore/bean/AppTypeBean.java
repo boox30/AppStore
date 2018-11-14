@@ -3,6 +3,7 @@ package com.yunarm.appstore.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AppTypeBean {
@@ -87,7 +88,7 @@ public class AppTypeBean {
             private int id;
             private String name;
             private boolean disabled;
-            private List<ChildrenBean> children;
+            private ArrayList<ChildrenBean> children;
 
             protected ChildrenBeanX(Parcel in) {
                 id = in.readInt();
@@ -131,11 +132,11 @@ public class AppTypeBean {
                 this.disabled = disabled;
             }
 
-            public List<ChildrenBean> getChildren() {
+            public ArrayList<ChildrenBean> getChildren() {
                 return children;
             }
 
-            public void setChildren(List<ChildrenBean> children) {
+            public void setChildren(ArrayList<ChildrenBean> children) {
                 this.children = children;
             }
 

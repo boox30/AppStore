@@ -45,7 +45,9 @@ public class FtpManagerTasks {
                 .subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
-                        listener.onLoginSucc(aBoolean);
+                        if (listener != null) {
+                            listener.onLoginSucc(aBoolean);
+                        }
                     }
                 });
     }
@@ -113,5 +115,9 @@ public class FtpManagerTasks {
                         }
                     }
                 });
+    }
+
+    public boolean isConnected() {
+        return ftpManager.isConnected();
     }
 }

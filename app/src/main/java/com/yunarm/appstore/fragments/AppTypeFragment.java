@@ -57,7 +57,10 @@ public class AppTypeFragment extends BaseLazyFragment {
                 ToastUtils.showToast(itemView.getContext(), "position:" + position + " "+list.get(position).getName());
                 Intent intent = new Intent();
                 intent.setClass(getSupportActivity(), AppInfoListActivity.class);
-                intent.putExtra(ApplicationConstant.ID, list.get(position).getId());
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList(ApplicationConstant.CHILDREN, list.get(position).getChildren());
+                intent.putExtra(ApplicationConstant.BUNDLE, bundle);
+                startActivity(intent);
             }
         });
 

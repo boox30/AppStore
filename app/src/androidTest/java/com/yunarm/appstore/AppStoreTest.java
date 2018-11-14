@@ -9,6 +9,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.william.androidsdk.utils.FileUtils;
 import com.yunarm.appstore.api.GetAppTypeListService;
+import com.yunarm.appstore.bean.AppInfoBean;
 import com.yunarm.appstore.bean.AppTypeBean;
 import com.yunarm.appstore.bean.PostResult;
 import com.yunarm.appstore.ftp.FTPManager;
@@ -191,7 +192,7 @@ public class AppStoreTest {
 
     @Test
     public void testRequestSmallAppType() {
-        GetAppTypeListService listService = HttpUtils.createSmallAppTypeListService(appContext);
+        GetAppTypeListService listService = HttpUtils.createAppInfoListService(appContext);
         listService
                 .getAppInfoList(null, 9+"", null, null, null, null)
                 .subscribeOn(Schedulers.io())
@@ -200,12 +201,17 @@ public class AppStoreTest {
                     @Override
                     public void accept(PostResult postResult) throws Exception {
                         String str = "{\"status\":" + String.valueOf(postResult.isStatus()) + ",\"message\":" + postResult.getMessage() + "}";
-                        String s = "/sdcard/message.txt";
-                        File file = new File(s);
+                        Gson gson = new Gson();
+                        File file = new File("/sdcard/result.txt");
                         if (!file.exists()) {
                             file.createNewFile();
                         }
                         FileUtils.saveContentToFile(str, file);
+                        AppInfoBean appTypeInfo = gson.fromJson(str, AppInfoBean.class);
+                        AppInfoBean.MessageBean message = appTypeInfo.getMessage();
+                        List<AppInfoBean.MessageBean.DataBean> data = message.getData();
+                        assertNotNull(message);
+                        assertTrue(data.size() >= 1);
                     }
                 });
     }

@@ -51,4 +51,5 @@ dependencies {
     //https://github.com/jpardogo/PagerSlidingTabStrip
     implementation 'com.jpardogo.materialtabstrip:library:1.1.1'
     implementation files('libs/commons-net-3.6.jar')
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 }

@@ -2,11 +2,11 @@ package com.yunarm.appstore.http;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.william.androidsdk.utils.FileUtils;
 import com.yunarm.appstore.api.GetAppTypeListService;
+import com.yunarm.appstore.bean.AppInfoBean;
 import com.yunarm.appstore.bean.AppTypeBean;
 import com.yunarm.appstore.bean.PostResult;
 
@@ -26,6 +26,7 @@ public class AppListHelper {
     List<String> bigTypes = new ArrayList<>();
     private static AppListHelper helperInstance;
     public static final String DATA_LIST_TAG = "data";
+    private List<AppInfoBean.MessageBean.DataBean> appInfoDataList;
 
     private AppListHelper() {
     }
@@ -84,7 +85,7 @@ public class AppListHelper {
 
     @SuppressLint("CheckResult")
     public void getAppInfoList(Context context, String category, final LoadFinishCallback callback) {
-        GetAppTypeListService listService = HttpUtils.createBigTypeAppListService(context);
+        GetAppTypeListService listService = HttpUtils.createAppInfoListService(context);
         listService
                 .getAppInfoList(null, category, null, null, null, null)
                 .subscribeOn(Schedulers.io())
@@ -92,14 +93,24 @@ public class AppListHelper {
                 .subscribe(new Consumer<PostResult>() {
                     @Override
                     public void accept(PostResult postResult) throws Exception {
-                        String str = "{\"status\":" + String.valueOf(postResult.isStatus()) + ",\"message\":" + postResult.getMessage() + "}";
-                        String s = "/adcard/message.txt";
-                        File file = new File(s);
+                        String message1 = postResult.getMessage();
+                        File file = new File("/sdcard/message.txt");
                         if (!file.exists()) {
                             file.createNewFile();
                         }
-                        FileUtils.saveContentToFile(str, file);
+                        FileUtils.saveContentToFile(message1, file);
+                        String str = "{\"status\":true,\"message\":" + message1 + "}";
+                        Gson gson = new Gson();
+                        AppInfoBean appTypeInfo = gson.fromJson(str, AppInfoBean.class);
+                        AppInfoBean.MessageBean message = appTypeInfo.getMessage();
+                        appInfoDataList = message.getData() ;
+                        callback.onLoadDataFinish();
+
                     }
                 });
+    }
+
+    public List<AppInfoBean.MessageBean.DataBean> getAppInfoDataList() {
+        return appInfoDataList;
     }
 }
