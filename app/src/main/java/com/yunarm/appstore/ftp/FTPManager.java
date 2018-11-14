@@ -48,7 +48,7 @@ public class FTPManager {
 //            return true;
             ftpClient.disconnect();
         }
-        ftpClient.setConnectTimeout(15000);//设置连接超时时间
+        ftpClient.setConnectTimeout(10000);//设置连接超时时间
         ftpClient.setControlEncoding("utf-8");
         ftpClient.connect(ip, port);
         if (FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
@@ -85,6 +85,7 @@ public class FTPManager {
         ftpClient.configure(new FTPClientConfig(FTPClientConfig.SYST_UNIX));
         ftpClient.setControlEncoding("UTF-8");
         ftpClient.enterLocalPassiveMode();
+        ftpClient.setConnectTimeout(3000);
         ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
         FTPFile[] files = ftpClient.listFiles();
         if (files.length == 0) {
