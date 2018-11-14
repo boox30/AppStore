@@ -7,8 +7,9 @@ import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.yunarm.appstore.api.GetAppTypeList;
-import com.yunarm.appstore.bean.AppTypeInfo;
+import com.william.androidsdk.utils.FileUtils;
+import com.yunarm.appstore.api.GetAppTypeListService;
+import com.yunarm.appstore.bean.AppTypeBean;
 import com.yunarm.appstore.bean.PostResult;
 import com.yunarm.appstore.ftp.FTPManager;
 import com.yunarm.appstore.ftp.FtpConnectStateListener;
@@ -166,9 +167,9 @@ public class AppStoreTest {
 
     @Test
     public void testRequestAppTypes() {
-        GetAppTypeList listService = HttpUtils.createAppTypeListService(appContext);
+        GetAppTypeListService listService = HttpUtils.createBigTypeAppListService(appContext);
         listService
-                .getApplistResult(String.valueOf(2))
+                .getAppTypeList(String.valueOf(2))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<PostResult>() {
@@ -179,13 +180,36 @@ public class AppStoreTest {
 
                         String str = "{\"status\":true,\"message\":" + postResult.getMessage() + "}";
                         Gson gson = new Gson();
-                        AppTypeInfo appTypeInfo = gson.fromJson(str, AppTypeInfo.class);
-                        List<AppTypeInfo.MessageBean> message = appTypeInfo.getMessage();
+                        AppTypeBean appTypeInfo = gson.fromJson(str, AppTypeBean.class);
+                        List<AppTypeBean.MessageBean> message = appTypeInfo.getMessage();
                         assertNotNull(message);
                         assertTrue(message.size() >= 1);
                     }
                 });
 
     }
+
+    @Test
+    public void testRequestSmallAppType() {
+        GetAppTypeListService listService = HttpUtils.createSmallAppTypeListService(appContext);
+        listService
+                .getAppInfoList(null, 9+"", null, null, null, null)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<PostResult>() {
+                    @Override
+                    public void accept(PostResult postResult) throws Exception {
+                        String str = "{\"status\":" + String.valueOf(postResult.isStatus()) + ",\"message\":" + postResult.getMessage() + "}";
+                        String s = "/sdcard/message.txt";
+                        File file = new File(s);
+                        if (!file.exists()) {
+                            file.createNewFile();
+                        }
+                        FileUtils.saveContentToFile(str, file);
+                    }
+                });
+    }
+
+
 
 }

@@ -5,7 +5,7 @@ import android.view.ViewGroup;
 
 import com.william.androidsdk.baseui.BaseRecyclerViewAdapter;
 import com.yunarm.appstore.R;
-import com.yunarm.appstore.bean.AppTypeInfo.MessageBean.ChildrenBeanX;
+import com.yunarm.appstore.bean.AppTypeBean.MessageBean.ChildrenBeanX;
 
 import java.util.List;
 

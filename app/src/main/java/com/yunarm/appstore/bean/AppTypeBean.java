@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import java.util.List;
 
-public class AppTypeInfo {
+public class AppTypeBean {
 
     /**
      * status : true

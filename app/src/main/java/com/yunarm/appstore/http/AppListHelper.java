@@ -5,10 +5,12 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.yunarm.appstore.api.GetAppTypeList;
-import com.yunarm.appstore.bean.AppTypeInfo;
+import com.william.androidsdk.utils.FileUtils;
+import com.yunarm.appstore.api.GetAppTypeListService;
+import com.yunarm.appstore.bean.AppTypeBean;
 import com.yunarm.appstore.bean.PostResult;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,8 +21,8 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class AppListHelper {
-    ArrayList<AppTypeInfo.MessageBean.ChildrenBeanX> types;
-    Map<String, ArrayList<AppTypeInfo.MessageBean.ChildrenBeanX>> allAppTypeMap = new HashMap<>();
+    ArrayList<AppTypeBean.MessageBean.ChildrenBeanX> types;
+    Map<String, ArrayList<AppTypeBean.MessageBean.ChildrenBeanX>> allAppTypeMap = new HashMap<>();
     List<String> bigTypes = new ArrayList<>();
     private static AppListHelper helperInstance;
     public static final String DATA_LIST_TAG = "data";
@@ -36,15 +38,15 @@ public class AppListHelper {
     }
 
     @SuppressLint("CheckResult")
-    public void getAppTypeData(Context context, final LoadFinishCallback callback) {
+    public void getAppTypeList(Context context, final LoadFinishCallback callback) {
         if (bigTypes != null && bigTypes.size() > 0 && allAppTypeMap != null && allAppTypeMap.size() > 0) {
             callback.onLoadDataFinish();
         }
         bigTypes.clear();
         allAppTypeMap.clear();
-        GetAppTypeList listService = HttpUtils.createAppTypeListService(context);
+        GetAppTypeListService listService = HttpUtils.createBigTypeAppListService(context);
         listService
-                .getApplistResult(String.valueOf(2))
+                .getAppTypeList(String.valueOf(2))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<PostResult>() {
@@ -53,17 +55,15 @@ public class AppListHelper {
 
                         String str = "{\"status\":" + String.valueOf(postResult.isStatus()) + ",\"message\":" + postResult.getMessage() + "}";
                         Gson gson = new Gson();
-                        AppTypeInfo appTypeInfo = gson.fromJson(str, AppTypeInfo.class);
-                        List<AppTypeInfo.MessageBean> message = appTypeInfo.getMessage();
-                        types = new ArrayList<>();
+                        AppTypeBean appTypeInfo = gson.fromJson(str, AppTypeBean.class);
+                        List<AppTypeBean.MessageBean> message = appTypeInfo.getMessage();
+
                         for (int i = 0; i < message.size(); i++) {
-                            AppTypeInfo.MessageBean messageBean = message.get(i);
+                            AppTypeBean.MessageBean messageBean = message.get(i);
                             String name = messageBean.getName();
                             bigTypes.add(name);
-                            types.clear();
-                            Log.d("tag", "=====name====" + name);
+                            types = new ArrayList<>();
                             for (int j = 0; j < messageBean.getChildren().size(); j++) {
-                                Log.d("tag", "==========children name=" + messageBean.getChildren().get(j).getName());
                                 types.add(messageBean.getChildren().get(j));
                             }
                             allAppTypeMap.put(name, types);
@@ -77,7 +77,29 @@ public class AppListHelper {
         return bigTypes;
     }
 
-    public ArrayList<AppTypeInfo.MessageBean.ChildrenBeanX> getTypes(String type) {
+    public ArrayList<AppTypeBean.MessageBean.ChildrenBeanX> getTypes(String type) {
         return allAppTypeMap.get(type);
+    }
+
+
+    @SuppressLint("CheckResult")
+    public void getAppInfoList(Context context, String category, final LoadFinishCallback callback) {
+        GetAppTypeListService listService = HttpUtils.createBigTypeAppListService(context);
+        listService
+                .getAppInfoList(null, category, null, null, null, null)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<PostResult>() {
+                    @Override
+                    public void accept(PostResult postResult) throws Exception {
+                        String str = "{\"status\":" + String.valueOf(postResult.isStatus()) + ",\"message\":" + postResult.getMessage() + "}";
+                        String s = "/adcard/message.txt";
+                        File file = new File(s);
+                        if (!file.exists()) {
+                            file.createNewFile();
+                        }
+                        FileUtils.saveContentToFile(str, file);
+                    }
+                });
     }
 }

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.william.androidsdk.utils.NetWorkUtils;
-import com.yunarm.appstore.api.GetAppTypeList;
+import com.yunarm.appstore.api.GetAppTypeListService;
 
 import java.io.File;
 import java.io.IOException;
@@ -93,7 +93,11 @@ public class HttpUtils {
         return retrofit;
     }
 
-    public static GetAppTypeList createAppTypeListService(Context context) {
-        return getRetrofit(URL_BASE + "front_app_category/", context).create(GetAppTypeList.class);
+    public static GetAppTypeListService createBigTypeAppListService(Context context) {
+        return getRetrofit(URL_BASE + "front_app_category/", context).create(GetAppTypeListService.class);
+    }
+
+    public static GetAppTypeListService createSmallAppTypeListService(Context context) {
+        return getRetrofit(URL_BASE + "front_app_list/", context).create(GetAppTypeListService.class);
     }
 }

@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.CommonAppsFragment">
+    tools:context=".fragments.AppInfoFragment">
 
     <com.jcodecraeer.xrecyclerview.XRecyclerView
-        android:id="@+id/common_app_content"
+        android:id="@+id/app_info_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
