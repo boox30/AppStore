@@ -19,7 +19,6 @@ public class MainActivity extends AppCompatActivity {
 
     private PagerSlidingTabStrip tabs;
     private ViewPager viewPager;
-    private ViewPager.OnPageChangeListener vpListener;
     private String TAG = "MainActivity";
 
     @Override
@@ -30,22 +29,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        vpListener = new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i1) {
-
-            }
-
-            @Override
-            public void onPageSelected(int i) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) {
-
-            }
-        };
         tabs = findViewById(R.id.tabs);
         viewPager = findViewById(R.id.view_pager);
         stepFragmentsWithViewPager();
@@ -71,9 +54,9 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 ViewPagerFragmentAdapter adapter = new ViewPagerFragmentAdapter(getSupportFragmentManager(), list);
+                adapter.setTitles(bigTypes);
                 viewPager.setAdapter(adapter);
                 tabs.setViewPager(viewPager);
-                tabs.setOnPageChangeListener(vpListener);
             }
         });
     }
