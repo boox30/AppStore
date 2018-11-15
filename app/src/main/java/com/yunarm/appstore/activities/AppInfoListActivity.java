@@ -2,7 +2,9 @@ package com.yunarm.appstore.activities;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.william.androidsdk.baseui.BaseLazyFragment;
@@ -31,6 +33,23 @@ public class AppInfoListActivity extends AppCompatActivity {
         tabs = findViewById(R.id.small_type_tabs);
         viewPager = findViewById(R.id.small_type_view_pager);
         stepFragmentsWithViewPager();
+        String title = getIntent().getStringExtra(ApplicationConstant.TITLE);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(title);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void stepFragmentsWithViewPager() {

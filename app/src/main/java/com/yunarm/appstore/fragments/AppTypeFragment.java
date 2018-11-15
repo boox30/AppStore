@@ -64,6 +64,7 @@ public class AppTypeFragment extends BaseLazyFragment {
             public void onItemClick(View itemView, int position) {
                 ToastUtils.showToast(itemView.getContext(), "position:" + position + " "+list.get(position).getName());
                 Intent intent = new Intent();
+                intent.putExtra(ApplicationConstant.TITLE, list.get(position).getName());
                 intent.setClass(getSupportActivity(), AppInfoListActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putParcelableArrayList(ApplicationConstant.CHILDREN, list.get(position).getChildren());
