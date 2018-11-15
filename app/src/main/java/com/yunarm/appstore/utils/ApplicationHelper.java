@@ -146,7 +146,7 @@ public class ApplicationHelper {
     /**
      * install client
      */
-    private static boolean clientInstall(String apkPath) {
+    public static boolean clientInstall(String apkPath) {
         PrintWriter PrintWriter = null;
         Process process = null;
         try {

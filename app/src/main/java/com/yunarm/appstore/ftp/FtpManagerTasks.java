@@ -76,7 +76,7 @@ public class FtpManagerTasks {
                         try {
                             ftpManager.downloadFile(localPath, remotePath, new FtpDownLoadListener() {
                                 @Override
-                                public void onDownProgress(long progress) {
+                                public void onDownProgress(int progress) {
                                     result.setProgress((int) progress);
                                     emitter.onNext(result);
                                 }

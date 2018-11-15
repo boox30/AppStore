@@ -145,7 +145,7 @@ public class FTPManager {
             if (currentSize / step != process) {
                 process = currentSize / step;
                 if (process % 10 == 0) {
-                    listener.onDownProgress(process);
+                    listener.onDownProgress((int)process);
                     Log.d(TAG, " ====file name:" + ftpFile.getName() + "===下载进度：" + process);
                 }
             }
@@ -229,7 +229,7 @@ public class FTPManager {
             if (currentSize / step != process) {
                 process = currentSize / step;
                 if (process % 10 == 0) {
-                    listener.onDownProgress(process);
+                    listener.onDownProgress((int)process);
                     Log.d(TAG, "下载进度：" + process);
                 }
             }

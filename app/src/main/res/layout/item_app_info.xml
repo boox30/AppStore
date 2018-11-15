@@ -1,50 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="@dimen/item_padding">
+<layout xmlns:bind="http://schemas.android.com/tools">
+    <data>
+        <import type="com.yunarm.appstore.bean.AppInfoBean.MessageBean.DataBean"/>
+        <import type="com.yunarm.appstore.events.ClickEvent"/>
+        <variable
+            name="clickEvent"
+            type="ClickEvent"/>
+        <variable
+            name="itemBean"
+            type="DataBean"/>
+    </data>
 
-    <ImageView
-        android:id="@+id/app_info_icon"
-        android:layout_width="@dimen/app_icon_width"
-        android:layout_height="@dimen/app_icon_width"
-        android:layout_alignParentLeft="true"
-        android:scaleType="fitXY" />
-
-    <TextView
-        android:id="@+id/app_info_name"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="5dp"
-        android:layout_toRightOf="@id/app_info_icon" />
-
-    <TextView
-        android:id="@+id/app_info_des"
-        android:layout_width="wrap_content"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/app_info_name"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="5dp"
-        android:gravity="center_vertical"
-        android:maxLines="2" />
+        android:padding="@dimen/item_padding">
 
-    <com.yunarm.appstore.views.progressButton.ProgressButton
-        android:id="@+id/app_info_download"
-        android:layout_width="@dimen/app_info_btn_width"
-        android:layout_height="@dimen/app_info_btn_height"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="10dp"
-        android:gravity="center"
-        android:text="@string/install_app"
-        android:textColor="@color/white"
-        android:textSize="@dimen/app_info_btn_text_size"
-        app:buttonColor="@android:color/holo_green_light"
-        app:cornerRadius="@dimen/app_info_btn_corner_radius"
-        app:progressColor="@android:color/holo_green_light"
-        app:progressDoneBackColor="@color/green" />
+        <ImageView
+            android:id="@+id/app_info_icon"
+            bind:loadImage="@{itemBean.id}"
+            android:layout_width="@dimen/app_icon_width"
+            android:layout_height="@dimen/app_icon_width"
+            android:layout_alignParentLeft="true"
+            android:scaleType="fitXY" />
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/app_info_name"
+            android:text="@{itemBean.name}"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/app_info_icon" />
+
+        <TextView
+            android:id="@+id/app_info_des"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/app_info_name"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:gravity="center_vertical"
+            android:maxLines="2" />
+
+        <com.yunarm.appstore.views.progressButton.ProgressButton
+            android:id="@+id/app_info_download"
+            android:layout_width="@dimen/app_info_btn_width"
+            android:layout_height="@dimen/app_info_btn_height"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
+            android:onClick="@{() -> clickEvent.onClick(itemBean)}"
+            android:text="@{itemBean.installState}"
+            android:textColor="@color/white"
+            android:textSize="@dimen/app_info_btn_text_size"
+            app:progress="@{itemBean.downloadProgress}"
+            app:cornerRadius="@dimen/app_info_btn_corner_radius"/>
+
+    </RelativeLayout>
+</layout>

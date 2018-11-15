@@ -87,7 +87,7 @@ public class AppListHelper {
     public void getAppInfoList(Context context, String category, final LoadFinishCallback callback) {
         GetAppTypeListService listService = HttpUtils.createAppInfoListService(context);
         listService
-                .getAppInfoList(null, category, null, null, null, null)
+                .getAppInfoList(null, category, String.valueOf(15), null, null, null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<PostResult>() {

@@ -76,7 +76,7 @@ public class AppStoreTest {
         try {
             ftpManager.downloadFile("/sdcard/", "/app/1001/com.newdadabus_3.4.3.apk", new FtpDownLoadListener() {
                 @Override
-                public void onDownProgress(long progress) {
+                public void onDownProgress(int progress) {
                     Log.d("tag", "===" + progress);
                 }
 
@@ -142,7 +142,7 @@ public class AppStoreTest {
     private void downLoadSimpleFile(FtpManagerTasks instance, String remoteFile, final CountDownLatch downLatch) {
         instance.getFtpFileByPathTask("/sdcard/", remoteFile, new FtpDownLoadListener() {
             @Override
-            public void onDownProgress(long progress) {
+            public void onDownProgress(int progress) {
 
                 Log.d(TAG, "==testDownloadTask=====" + progress + " thread: " + Thread.currentThread());
                 assertTrue(progress >= 0 && progress <= 100);

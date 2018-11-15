@@ -5,4 +5,6 @@
     <string name="installing">正在安装</string>
     <string name="downloading">正在下载</string>
     <string name="wait_download">等待下载</string>
+    <string name="no_current_type_app">暂无此分类应用</string>
+    <string name="loading" translatable="false">正在加载...</string>
 </resources>

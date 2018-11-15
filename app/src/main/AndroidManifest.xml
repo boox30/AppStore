@@ -10,6 +10,7 @@
 
     <application
         android:allowBackup="true"
+        android:name=".AppStoreApplication"
         android:icon="@mipmap/app_store_icon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"

@@ -49,11 +49,13 @@ public class ProgressButton extends AppCompatButton {
         mDrawableProgressDone = new GradientDrawable();
 
         //Get default normal color
-        int defaultButtonColor = getResources().getColor(R.color.colorGray, null);
+        int defaultButtonColor = getResources().getColor(R.color.colorPrimary, null);
         //Get default progress color
-        int defaultProgressColor = getResources().getColor(R.color.colorGreen, null);
+        int defaultButtonBackColor = getResources().getColor(R.color.colorGreenLight, null);
         //Get default progress background color
-        int defaultBackColor = getResources().getColor(R.color.colorGray, null);
+        int defaultProgressColor = getResources().getColor(R.color.colorGreenDark, null);
+
+        int defaultDoneBackColor = getResources().getColor(R.color.colorGreen, null);
 
         TypedArray attr = context.obtainStyledAttributes(attrs, R.styleable.ProgressButton);
 
@@ -65,7 +67,7 @@ public class ProgressButton extends AppCompatButton {
             //Set normal color
             mDrawableButton.setColor(buttonColor);
             //Get custom progress background color
-            int progressBackColor = attr.getColor(R.styleable.ProgressButton_progressBackColor, defaultBackColor);
+            int progressBackColor = attr.getColor(R.styleable.ProgressButton_progressBackColor, defaultButtonBackColor);
             //Set progress background drawable color
             mDrawableProgressBackground.setColor(progressBackColor);
             //Get custom progress color
@@ -80,7 +82,7 @@ public class ProgressButton extends AppCompatButton {
             //Get maximize progress
             mMaxProgress = attr.getInteger(R.styleable.ProgressButton_maxProgress, mMaxProgress);
 
-            int progressDoneBackColor = attr.getColor(R.styleable.ProgressButton_progressDoneBackColor, defaultBackColor);
+            int progressDoneBackColor = attr.getColor(R.styleable.ProgressButton_progressDoneBackColor, defaultDoneBackColor);
             mDrawableProgressDone.setColor(progressDoneBackColor);
 
         } finally {
@@ -117,7 +119,7 @@ public class ProgressButton extends AppCompatButton {
             mDrawableProgress.draw(canvas);
 
             if (mProgress == mMaxProgress) {
-                setBackgroundDrawable(mDrawableButton);
+                setBackgroundDrawable(mDrawableProgressDone);
                 mFinish = true;
             }
         }
@@ -132,8 +134,9 @@ public class ProgressButton extends AppCompatButton {
             mProgress = progress;
             setBackgroundDrawable(mDrawableProgressBackground);
             invalidate();
-        } else if (mFinish) {
+        } else {
             setBackgroundDrawable(mDrawableProgressDone);
+            invalidate();
         }
     }
 

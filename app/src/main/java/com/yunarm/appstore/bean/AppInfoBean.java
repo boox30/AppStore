@@ -1,5 +1,8 @@
 package com.yunarm.appstore.bean;
 
+import android.databinding.BaseObservable;
+import android.databinding.Bindable;
+import com.yunarm.appstore.BR;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -86,7 +89,7 @@ public class AppInfoBean {
             this.data = data;
         }
 
-        public static class DataBean {
+        public static class DataBean extends BaseObservable {
             /**
              * id : 1
              * name : Hola桌面
@@ -137,7 +140,32 @@ public class AppInfoBean {
             private String modify_at;
             private Object comment;
             private String status;
+            private int downloadProgress;
 
+            @Bindable
+            public int getDownloadProgress() {
+                return downloadProgress;
+            }
+
+            public void setDownloadProgress(int downloadProgress) {
+                this.downloadProgress = downloadProgress;
+                notifyPropertyChanged(BR.downloadProgress);
+            }
+
+            @Bindable
+            public String getInstallState() {
+                return installState;
+            }
+
+
+            public void setInstallState(String installState) {
+                this.installState = installState;
+                notifyPropertyChanged(BR.installState);
+            }
+
+            private String installState;
+
+            @Bindable
             public String getId() {
                 return id;
             }
@@ -146,12 +174,14 @@ public class AppInfoBean {
                 this.id = id;
             }
 
+            @Bindable
             public String getName() {
                 return name;
             }
 
             public void setName(String name) {
                 this.name = name;
+                notifyPropertyChanged(BR.name);
             }
 
             public String getPackageX() {

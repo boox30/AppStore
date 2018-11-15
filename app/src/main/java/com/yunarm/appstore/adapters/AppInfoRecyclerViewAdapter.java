@@ -1,5 +1,6 @@
 package com.yunarm.appstore.adapters;
 
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -12,6 +13,9 @@ import com.william.androidsdk.baseui.BaseRecyclerViewAdapter;
 import com.william.androidsdk.utils.ToastUtils;
 import com.yunarm.appstore.ApplicationConstant;
 import com.yunarm.appstore.R;
+import com.yunarm.appstore.app.AppInstallManager;
+import com.yunarm.appstore.app.AppInstallTask;
+import com.yunarm.appstore.app.AppInstallTaskManagerThread;
 import com.yunarm.appstore.bean.AppInfoBean;
 import com.yunarm.appstore.ftp.FtpConnectStateListener;
 import com.yunarm.appstore.ftp.FtpDownLoadListener;
@@ -22,12 +26,15 @@ import java.util.List;
 
 public class AppInfoRecyclerViewAdapter extends BaseRecyclerViewAdapter<AppInfoBean.MessageBean.DataBean, AppInfoRecyclerViewAdapter.AppInfoViewHolder> {
 
+    private final AppInstallManager installManager;
     private List<AppInfoBean.MessageBean.DataBean> dataList;
     private final FtpManagerTasks managerTasks;
     private boolean mLoginSucc = false;
 
     public AppInfoRecyclerViewAdapter() {
         managerTasks = ConnectToFtpServer();
+        installManager = AppInstallManager.getInstance();
+        new Thread(new AppInstallTaskManagerThread()).start();
     }
 
     private FtpManagerTasks ConnectToFtpServer() {
@@ -76,15 +83,15 @@ public class AppInfoRecyclerViewAdapter extends BaseRecyclerViewAdapter<AppInfoB
                 ToastUtils.showToast(getContext(), "path: " + dataList.get(position).getPath() + " name:" + dataList.get(position).getName() + " id:" + dataList.get(position).getId());
                 managerTasks.getFtpFileByPathTask("/sdcard/", remotePath, new FtpDownLoadListener() {
                     @Override
-                    public void onDownProgress(long progress) {
+                    public void onDownProgress(int progress) {
                         downLoadButton.setText(getContext().getResources().getString(R.string.downloading));
-                        downLoadButton.setProgress((int) progress);
+                        downLoadButton.setProgress(progress);
                     }
 
                     @Override
                     public void onDownloadSucc(String localPath) {
                         downLoadButton.setText(getContext().getResources().getString(R.string.installing));
-//                                    ApplicationHelper.clientInstallTask(localPath);
+                        startInstallApk(localPath);
                         Log.d("tag", "====onDownloadSucc=========" + localPath);
                     }
 
@@ -96,6 +103,15 @@ public class AppInfoRecyclerViewAdapter extends BaseRecyclerViewAdapter<AppInfoB
 
             }
         });
+    }
+
+    private void startInstallApk(String localPath) {
+        AppInstallTask task = new AppInstallTask(localPath);
+        installManager.addAppInstallTask(task);
+    }
+
+    public void setAppInstallFinish() {
+
     }
 
     public class AppInfoViewHolder extends BaseRecyclerViewAdapter.ViewHolder {
