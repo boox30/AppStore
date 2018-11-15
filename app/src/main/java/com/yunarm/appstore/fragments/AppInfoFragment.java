@@ -1,7 +1,10 @@
 package com.yunarm.appstore.fragments;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
@@ -48,6 +51,9 @@ public class AppInfoFragment extends BaseLazyFragment {
         recyclerView = findViewById(R.id.app_info_content);
         message = findViewById(R.id.message);
         recyclerView.setLayoutManager(new LinearLayoutManager(getSupportActivity()));
+        RecyclerViewDivider divider = new RecyclerViewDivider(getSupportActivity(), LinearLayoutManager.HORIZONTAL, R.drawable.item_divider_revycler_view);
+
+        recyclerView.addItemDecoration(divider);
     }
 
     @Override

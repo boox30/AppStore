@@ -1,5 +1,7 @@
 package com.yunarm.appstore.app;
 
+import android.util.Log;
+
 import com.william.androidsdk.utils.FileUtils;
 import com.yunarm.appstore.AppStoreApplication;
 import com.yunarm.appstore.R;

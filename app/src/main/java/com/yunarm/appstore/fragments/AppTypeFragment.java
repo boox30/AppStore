@@ -2,10 +2,12 @@ package com.yunarm.appstore.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 
 import com.william.androidsdk.baseui.BaseLazyFragment;
@@ -40,6 +42,12 @@ public class AppTypeFragment extends BaseLazyFragment {
     protected void initView() {
         recyclerView = findViewById(R.id.app_type_content);
         recyclerView.setLayoutManager(new LinearLayoutManager(getSupportActivity()));
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getSupportActivity(), DividerItemDecoration.VERTICAL);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getSupportActivity(), R.drawable.item_divider_revycler_view));
+
+        }
+        recyclerView.addItemDecoration(dividerItemDecoration);
         adapter = new AppTypeRecyclerViewAdapter();
 
     }
