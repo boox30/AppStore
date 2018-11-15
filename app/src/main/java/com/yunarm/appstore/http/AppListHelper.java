@@ -2,6 +2,7 @@ package com.yunarm.appstore.http;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.william.androidsdk.utils.FileUtils;
@@ -42,6 +43,7 @@ public class AppListHelper {
     public void getAppTypeList(Context context, final LoadFinishCallback callback) {
         if (bigTypes != null && bigTypes.size() > 0 && allAppTypeMap != null && allAppTypeMap.size() > 0) {
             callback.onLoadDataFinish();
+            return;
         }
         bigTypes.clear();
         allAppTypeMap.clear();
@@ -53,7 +55,6 @@ public class AppListHelper {
                 .subscribe(new Consumer<PostResult>() {
                     @Override
                     public void accept(PostResult postResult) throws Exception {
-
                         String str = "{\"status\":" + String.valueOf(postResult.isStatus()) + ",\"message\":" + postResult.getMessage() + "}";
                         Gson gson = new Gson();
                         AppTypeBean appTypeInfo = gson.fromJson(str, AppTypeBean.class);
