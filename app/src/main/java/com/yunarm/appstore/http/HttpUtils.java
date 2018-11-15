@@ -79,9 +79,9 @@ public class HttpUtils {
         Cache mCache = new Cache(mFile, maxSize);
 
         OkHttpClient mClient = new OkHttpClient.Builder()
-                .addInterceptor(mInterceptor)//应用程序拦截器
-                .addNetworkInterceptor(mNetInterceptor)//网络拦截器
-                .cache(mCache)//添加缓存
+//                .addInterceptor(mInterceptor)//应用程序拦截器
+//                .addNetworkInterceptor(mNetInterceptor)//网络拦截器
+//                .cache(mCache)//添加缓存
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()

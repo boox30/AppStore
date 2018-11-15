@@ -7,4 +7,8 @@
     <string name="wait_download">等待下载</string>
     <string name="no_current_type_app">暂无此分类应用</string>
     <string name="loading" translatable="false">正在加载...</string>
+    <string name="open">打开</string>
+    <string name="uninstall_app">卸载</string>
+    <string name="uninstall_app_success">卸载成功</string>
+    <string name="uninstall_app_error">卸载失败</string>
 </resources>

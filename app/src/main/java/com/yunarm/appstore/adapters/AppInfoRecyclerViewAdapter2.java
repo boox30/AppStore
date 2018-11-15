@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.yunarm.appstore.BR;
 import com.yunarm.appstore.R;
 import com.yunarm.appstore.app.AppInstallTaskManagerThread;
+import com.yunarm.appstore.app.ApplicationHelper;
 import com.yunarm.appstore.bean.AppInfoBean;
 import com.yunarm.appstore.events.ClickEvent;
 
@@ -45,9 +46,14 @@ public class AppInfoRecyclerViewAdapter2 extends RecyclerView.Adapter<AppInfoRec
 
     @Override
     public void onBindViewHolder(AppInfoRecyclerViewAdapter2.BaseViewHolder holder, int position) {
+        AppInfoBean.MessageBean.DataBean dataBean = itemDatas.get(position);
         holder.binding.setVariable(BR.itemBean, itemDatas.get(position));
         holder.binding.setVariable(BR.clickEvent, new ClickEvent());
-        itemDatas.get(position).setInstallState(mContext.getResources().getString(R.string.install_app));
+        if (ApplicationHelper.isApplicationAvilible(mContext.getPackageManager(), dataBean.getPackageX())) {
+            itemDatas.get(position).setInstallState(mContext.getResources().getString(R.string.uninstall_app));
+        } else {
+            itemDatas.get(position).setInstallState(mContext.getResources().getString(R.string.install_app));
+        }
         holder.binding.executePendingBindings();
     }
 

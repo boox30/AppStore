@@ -91,7 +91,7 @@ public class AppInfoRecyclerViewAdapter extends BaseRecyclerViewAdapter<AppInfoB
                     @Override
                     public void onDownloadSucc(String localPath) {
                         downLoadButton.setText(getContext().getResources().getString(R.string.installing));
-                        startInstallApk(localPath);
+                        //startInstallApk(localPath);
                         Log.d("tag", "====onDownloadSucc=========" + localPath);
                     }
 
@@ -105,10 +105,10 @@ public class AppInfoRecyclerViewAdapter extends BaseRecyclerViewAdapter<AppInfoB
         });
     }
 
-    private void startInstallApk(String localPath) {
-        AppInstallTask task = new AppInstallTask(localPath);
-        installManager.addAppInstallTask(task);
-    }
+//    private void startInstallApk(String localPath) {
+//        AppInstallTask task = new AppInstallTask(localPath);
+//        installManager.addAppInstallTask(task);
+//    }
 
     public void setAppInstallFinish() {
 
