@@ -2,7 +2,6 @@ package com.yunarm.appstore.http;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.william.androidsdk.utils.FileUtils;
@@ -85,26 +84,30 @@ public class AppListHelper {
 
 
     @SuppressLint("CheckResult")
-    public void getAppInfoList(Context context, String category, final LoadFinishCallback callback) {
+    public void getAppInfoList(Context context, final String category, String pageIndex, final LoadFinishCallback callback) {
         GetAppTypeListService listService = HttpUtils.createAppInfoListService(context);
         listService
-                .getAppInfoList(null, category, String.valueOf(15), null, null, null)
+                .getAppInfoList(null, category, String.valueOf(13), pageIndex, null, null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<PostResult>() {
                     @Override
                     public void accept(PostResult postResult) throws Exception {
+                        if (!postResult.isStatus()) {
+                            callback.onLoadDataFinish();
+                            return;
+                        }
                         String message1 = postResult.getMessage();
                         File file = new File("/sdcard/message.txt");
                         if (!file.exists()) {
                             file.createNewFile();
                         }
                         FileUtils.saveContentToFile(message1, file);
-                        String str = "{\"status\":true,\"message\":" + message1 + "}";
+                        String str = "{\"status\":" + String.valueOf(postResult.isStatus()) + ",\"message\":" + message1 + "}";
                         Gson gson = new Gson();
                         AppInfoBean appTypeInfo = gson.fromJson(str, AppInfoBean.class);
                         AppInfoBean.MessageBean message = appTypeInfo.getMessage();
-                        appInfoDataList = message.getData() ;
+                        appInfoDataList = message.getData();
                         callback.onLoadDataFinish();
 
                     }
@@ -113,5 +116,16 @@ public class AppListHelper {
 
     public List<AppInfoBean.MessageBean.DataBean> getAppInfoDataList() {
         return appInfoDataList;
+    }
+
+    public void getTypeIconId(Context context, int category, final LoadIconFinishCallback callback) {
+        getAppInfoList(context, String.valueOf(category), String.valueOf(1), new LoadFinishCallback() {
+            @Override
+            public void onLoadDataFinish() {
+                if (appInfoDataList.size() > 0) {
+                    callback.onLoadDataFinish(appInfoDataList.get(0).getId());
+                }
+            }
+        });
     }
 }

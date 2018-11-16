@@ -1,14 +1,9 @@
 package com.yunarm.appstore.app;
 
-import android.util.Log;
-
 import com.william.androidsdk.utils.FileUtils;
 import com.yunarm.appstore.AppStoreApplication;
 import com.yunarm.appstore.R;
 import com.yunarm.appstore.bean.AppInfoBean;
-import com.yunarm.appstore.events.AppInstallFinishEvent;
-
-import org.greenrobot.eventbus.EventBus;
 
 public class AppInstallTask implements Runnable {
     private AppInfoBean.MessageBean.DataBean bean;
@@ -26,7 +21,6 @@ public class AppInstallTask implements Runnable {
             boolean avilible = ApplicationHelper.isApplicationAvilible(AppStoreApplication.getContext().getPackageManager(), bean.getPackageX());
             if (avilible) {
                 bean.setInstallState(AppStoreApplication.getContext().getResources().getString(R.string.open));
-                EventBus.getDefault().post(new AppInstallFinishEvent(apkPath));
                 FileUtils.deleteFile(apkPath);
             }
         }

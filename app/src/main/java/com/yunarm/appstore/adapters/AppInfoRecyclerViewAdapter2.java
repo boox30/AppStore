@@ -22,8 +22,7 @@ public class AppInfoRecyclerViewAdapter2 extends RecyclerView.Adapter<AppInfoRec
     private int defaultLayout;
     private Context mContext;
 
-    public AppInfoRecyclerViewAdapter2(List<AppInfoBean.MessageBean.DataBean> itemDatas, int defaultLayout){
-        this.itemDatas = itemDatas;
+    public AppInfoRecyclerViewAdapter2(int defaultLayout){
         this.defaultLayout = defaultLayout;
         new Thread(new AppInstallTaskManagerThread()).start();
     }
@@ -71,4 +70,26 @@ public class AppInfoRecyclerViewAdapter2 extends RecyclerView.Adapter<AppInfoRec
         }
     }
 
+    /**
+     * 设置新的数据
+     */
+    public void setData(List<AppInfoBean.MessageBean.DataBean> data) {
+        itemDatas = data;
+        notifyDataSetChanged();
+    }
+
+    public void addDates(List<AppInfoBean.MessageBean.DataBean> data) {
+        if (data == null || data.size() == 0) return;
+
+        if (itemDatas == null || itemDatas.size() == 0) {
+            setData(data);
+        }else {
+            itemDatas.addAll(itemDatas.size(), data);
+            notifyItemRangeInserted(itemDatas.size() - data.size() + 1, data.size());
+        }
+    }
+
+    public List<AppInfoBean.MessageBean.DataBean> getItemDatas() {
+        return itemDatas;
+    }
 }

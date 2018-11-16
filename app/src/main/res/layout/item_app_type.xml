@@ -8,10 +8,12 @@
         android:id="@+id/app_type_icon"
         android:layout_alignParentLeft="true"
         android:layout_width="@dimen/app_icon_width"
+        android:src="@mipmap/app_store_icon"
         android:layout_height="@dimen/app_icon_width" />
 
     <TextView
         android:id="@+id/app_type_name"
+        android:textStyle="bold"
         android:layout_toRightOf="@id/app_type_icon"
         android:layout_alignParentTop="true"
         android:layout_width="wrap_content"
@@ -26,7 +28,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignLeft="@id/app_type_name"
         android:id="@+id/app_type_des"
-        android:maxLines="2"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:layout_marginRight="5dp"
         android:gravity="center_vertical"
         />
