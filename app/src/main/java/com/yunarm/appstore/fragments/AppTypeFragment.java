@@ -10,7 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.william.androidsdk.baseui.BaseLazyFragment;
+import com.william.androidsdk.baseui.BaseFragment;
 import com.william.androidsdk.baseui.listener.OnItemClickListener;
 import com.william.androidsdk.utils.ToastUtils;
 import com.yunarm.appstore.ApplicationConstant;
@@ -23,7 +23,7 @@ import com.yunarm.appstore.http.AppListHelper;
 import java.util.ArrayList;
 
 @SuppressLint("ValidFragment")
-public class AppTypeFragment extends BaseLazyFragment {
+public class AppTypeFragment extends BaseFragment {
     private String type;
     private RecyclerView recyclerView;
     private AppTypeRecyclerViewAdapter adapter;

@@ -84,10 +84,10 @@ public class AppListHelper {
 
 
     @SuppressLint("CheckResult")
-    public void getAppInfoList(Context context, final String category, String pageIndex, final LoadFinishCallback callback) {
+    public void getAppInfoList(Context context, final String category, String pageIndex, String keyword,final LoadFinishCallback callback) {
         GetAppTypeListService listService = HttpUtils.createAppInfoListService(context);
         listService
-                .getAppInfoList(null, category, String.valueOf(13), pageIndex, null, null)
+                .getAppInfoList(null, category, String.valueOf(13), pageIndex, null, keyword)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<PostResult>() {
@@ -119,7 +119,7 @@ public class AppListHelper {
     }
 
     public void getTypeIconId(Context context, int category, final LoadIconFinishCallback callback) {
-        getAppInfoList(context, String.valueOf(category), String.valueOf(1), new LoadFinishCallback() {
+        getAppInfoList(context, String.valueOf(category), String.valueOf(1), null, new LoadFinishCallback() {
             @Override
             public void onLoadDataFinish() {
                 if (appInfoDataList.size() > 0) {

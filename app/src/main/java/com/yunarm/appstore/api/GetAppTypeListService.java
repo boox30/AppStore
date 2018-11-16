@@ -16,7 +16,7 @@ public interface GetAppTypeListService {
     @FormUrlEncoded
     @POST(".")
     Observable<PostResult> getAppInfoList(@Nullable @Field("type") String type,
-                                          @Field("category") String category,
+                                          @Nullable @Field("category") String category,
                                           @Nullable @Field("page_size") String pageSize,
                                           @Nullable @Field("page_index") String pageIndex,
                                           @Nullable @Field("sort") String sort,

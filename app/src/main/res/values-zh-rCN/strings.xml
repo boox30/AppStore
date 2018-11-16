@@ -12,4 +12,5 @@
     <string name="uninstall_app_success">卸载成功</string>
     <string name="uninstall_app_error">卸载失败</string>
     <string name="no_more">没有更多</string>
+    <string name="input_name_or_pkg">输入要查找的应用</string>
 </resources>

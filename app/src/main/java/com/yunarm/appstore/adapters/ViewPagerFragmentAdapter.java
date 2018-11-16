@@ -4,15 +4,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 
 import com.william.androidsdk.baseui.BaseFragmentPagerAdapter;
-import com.william.androidsdk.baseui.BaseLazyFragment;
+import com.william.androidsdk.baseui.BaseFragment;
 
 import java.util.List;
 
-public class ViewPagerFragmentAdapter extends BaseFragmentPagerAdapter<BaseLazyFragment> {
+public class ViewPagerFragmentAdapter extends BaseFragmentPagerAdapter<BaseFragment> {
 
     private List<String> bigTypes;
 
-    public ViewPagerFragmentAdapter(FragmentManager fm, List<BaseLazyFragment> list) {
+    public ViewPagerFragmentAdapter(FragmentManager fm, List<BaseFragment> list) {
         super(fm, list);
 
     }

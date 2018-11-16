@@ -7,13 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.astuetz.PagerSlidingTabStrip;
-import com.william.androidsdk.baseui.BaseLazyFragment;
+import com.william.androidsdk.baseui.BaseFragment;
 import com.yunarm.appstore.ApplicationConstant;
 import com.yunarm.appstore.R;
 import com.yunarm.appstore.adapters.ViewPagerFragmentAdapter;
 import com.yunarm.appstore.bean.AppTypeBean;
 import com.yunarm.appstore.fragments.AppInfoFragment;
-import com.yunarm.appstore.http.AppListHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +52,7 @@ public class AppInfoListActivity extends AppCompatActivity {
     }
 
     private void stepFragmentsWithViewPager() {
-        ArrayList<BaseLazyFragment> list = new ArrayList<>();
+        ArrayList<BaseFragment> list = new ArrayList<>();
         List<String> titles = new ArrayList<>();
         Bundle bundle = getIntent().getBundleExtra(ApplicationConstant.BUNDLE);
         ArrayList<AppTypeBean.MessageBean.ChildrenBeanX.ChildrenBean> arrayList = bundle.getParcelableArrayList(ApplicationConstant.CHILDREN);

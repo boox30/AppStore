@@ -8,7 +8,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
-import com.william.androidsdk.baseui.BaseLazyFragment;
+import com.william.androidsdk.baseui.BaseFragment;
+import com.william.androidsdk.utils.StringUtils;
 import com.william.androidsdk.utils.ToastUtils;
 import com.yunarm.appstore.ApplicationConstant;
 import com.yunarm.appstore.R;
@@ -20,7 +21,7 @@ import com.yunarm.appstore.http.LoadFinishCallback;
 import java.util.List;
 
 @SuppressLint("ValidFragment")
-public class AppInfoFragment extends BaseLazyFragment implements XRecyclerView.LoadingListener {
+public class AppInfoFragment extends BaseFragment implements XRecyclerView.LoadingListener {
 
     private XRecyclerView recyclerView;
     private TextView viewById;
@@ -30,10 +31,17 @@ public class AppInfoFragment extends BaseLazyFragment implements XRecyclerView.L
     private TextView message;
     private int pageIndex = 1;
     private String id;
+    private String search;
     //    private AppInfoRecyclerViewAdapter adapter;
 
     public AppInfoFragment(String type) {
         this.type = type;
+        instance = AppListHelper.getInstance();
+    }
+
+    public AppInfoFragment() {
+        Log.d("tag", "=======init AppInfoFragment======");
+
         instance = AppListHelper.getInstance();
     }
 
@@ -51,7 +59,7 @@ public class AppInfoFragment extends BaseLazyFragment implements XRecyclerView.L
 
         recyclerView.addItemDecoration(divider);
         recyclerView.setPullRefreshEnabled(false);
-        recyclerView.setLoadingMoreEnabled(true);
+        recyclerView.setLoadingMoreEnabled(isSearchNull());
         recyclerView.getDefaultRefreshHeaderView();
         recyclerView.setLoadingListener(this);
     }
@@ -61,13 +69,12 @@ public class AppInfoFragment extends BaseLazyFragment implements XRecyclerView.L
         message.setText(R.string.loading);
         Bundle bundle = getArguments();
         id = bundle.getString(ApplicationConstant.ID);
+        search = bundle.getString(ApplicationConstant.SEARCH);
 
         LoadFinishCallback callback = new LoadFinishCallback() {
             @Override
             public void onLoadDataFinish() {
                 List<AppInfoBean.MessageBean.DataBean> dataList = instance.getAppInfoDataList();
-                //adapter = new AppInfoRecyclerViewAdapter();
-                //adapter.setData(dataList);
                 if ((dataList == null || dataList.size() == 0)) {
                     message.setVisibility(View.VISIBLE);
                     message.setText(R.string.no_current_type_app);
@@ -84,7 +91,11 @@ public class AppInfoFragment extends BaseLazyFragment implements XRecyclerView.L
     }
 
     private void loadData(LoadFinishCallback callback) {
-        instance.getAppInfoList(getSupportActivity(), id, String.valueOf(pageIndex), callback);
+        instance.getAppInfoList(getSupportActivity(), isSearchNull() ? id : null, String.valueOf(pageIndex), isSearchNull() ? null : search, callback);
+    }
+
+    private boolean isSearchNull() {
+        return StringUtils.isNullOrEmpty(search);
     }
 
 
