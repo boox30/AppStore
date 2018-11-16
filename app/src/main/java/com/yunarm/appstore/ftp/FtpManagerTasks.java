@@ -63,7 +63,6 @@ public class FtpManagerTasks {
     @SuppressLint("CheckResult")
     public void getFtpFileByPathTask(final String localPath, final String remotePath, final FtpDownLoadListener listener) {
         if (!ftpManager.isConnected()) {
-            Log.d("tag", "=====ftpManager.isConnected() false======");
             listener.onDownloadFail();
             return;
         }
@@ -72,7 +71,6 @@ public class FtpManagerTasks {
                 .create(new ObservableOnSubscribe<FtpDownloadResult>() {
                     @Override
                     public void subscribe(final ObservableEmitter<FtpDownloadResult> emitter) throws Exception {
-                        Log.d("tag", "===task=========thread: " + Thread.currentThread());
                         try {
                             ftpManager.downloadFile(localPath, remotePath, new FtpDownLoadListener() {
                                 @Override

@@ -93,7 +93,7 @@ public class ApplicationHelper {
         return (!isSystemApp(pInfo) && !isSystemUpdateApp(pInfo));
     }
 
-    public static boolean clientInstallTask(final String apkPath) {
+    public static void clientInstallTask(final String apkPath, final Callback callback) {
         Observable.create(new ObservableOnSubscribe<Boolean>() {
             @Override
             public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
@@ -109,12 +109,14 @@ public class ApplicationHelper {
                     @Override
                     public void onNext(Boolean b) {
                         result = b;
+                        callback.finish(b);
                         Log.d(TAG, "Client installed successful!");
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         result = false;
+                        callback.finish(false);
                         Log.e(TAG, "Client installed error!");
                     }
 
@@ -122,14 +124,12 @@ public class ApplicationHelper {
                     public void onComplete() {
                     }
                 });
-        return result;
     }
 
     public interface Callback {
         void finish(boolean success);
     }
 
-    ;
 
     public static void clientUninstallTask(final String pkgName, final Callback callback) {
         synchronized (pkgName) {

@@ -6,6 +6,7 @@ import android.os.SystemClock;
 
 import com.william.androidsdk.utils.ToastUtils;
 import com.yunarm.appstore.AppStoreApplication;
+import com.yunarm.appstore.ApplicationConstant;
 import com.yunarm.appstore.R;
 import com.yunarm.appstore.app.AppInstallManager;
 import com.yunarm.appstore.app.AppInstallTask;
@@ -66,7 +67,7 @@ public class ClickEvent {
         }
 
         String remotePath = "/app/" + bean.getPath();
-        ftpManagerTasks.getFtpFileByPathTask("/sdcard/", remotePath, new FtpDownLoadListener() {
+        ftpManagerTasks.getFtpFileByPathTask(ApplicationConstant.LOCAL_PATH, remotePath, new FtpDownLoadListener() {
             @Override
             public void onDownProgress(int progress) {
                 bean.setInstallState(context.getResources().getString(R.string.downloading));
