@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.william.androidsdk.baseui.BaseFragment;
+import com.william.androidsdk.utils.InputMethodUtils;
 import com.william.androidsdk.utils.StringUtils;
 import com.william.androidsdk.utils.ToastUtils;
 import com.yunarm.appstore.ApplicationConstant;
@@ -77,8 +78,11 @@ public class AppInfoFragment extends BaseFragment implements XRecyclerView.Loadi
                 List<AppInfoBean.MessageBean.DataBean> dataList = instance.getAppInfoDataList();
                 if ((dataList == null || dataList.size() == 0)) {
                     message.setVisibility(View.VISIBLE);
-                    message.setText(R.string.no_current_type_app);
+                    message.setText(isSearchNull() ? R.string.no_current_type_app : R.string.no_match_app);
                     return;
+                }
+                if (InputMethodUtils.isSoftShowing(getSupportActivity())) {
+                    InputMethodUtils.showOrHide(getSupportActivity());
                 }
                 message.setVisibility(View.INVISIBLE);
                 recyclerView.setVisibility(View.VISIBLE);

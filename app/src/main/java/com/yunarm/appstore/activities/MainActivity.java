@@ -17,6 +17,7 @@ import android.widget.FrameLayout;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.william.androidsdk.baseui.BaseFragment;
+import com.william.androidsdk.utils.InputMethodUtils;
 import com.yunarm.appstore.ApplicationConstant;
 import com.yunarm.appstore.R;
 import com.yunarm.appstore.adapters.ViewPagerFragmentAdapter;
@@ -35,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private ViewPager viewPager;
     private String TAG = "MainActivity";
     private FrameLayout contentLayout;
+    private AppInfoFragment searchFragment;
+    private boolean searchIsshowing =  false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +97,33 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (InputMethodUtils.isSoftShowing(this)) {
+            InputMethodUtils.showOrHide(this);
+        } else if (searchIsshowing) {
+            hideSearchFragment();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    private void hideSearchFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.remove(searchFragment);
+        transaction.commit();
+        viewPager.setVisibility(View.VISIBLE);
+        tabs.setVisibility(View.VISIBLE);
+        searchIsshowing = false;
+        searchFragment = null;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        searchIsshowing = false;
+    }
 
     private void stepFragmentsWithViewPager() {
         final ArrayList<BaseFragment> list = new ArrayList<>();
@@ -124,15 +154,19 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        Log.d("tag", "==========query======"+query);
-        AppInfoFragment infoFragment = new AppInfoFragment();
-        Bundle args = new Bundle();
-        args.putString(ApplicationConstant.SEARCH, query);
-        infoFragment.setArguments(args);
+        Log.d("tag", "==========query======" + query);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.add(R.id.fragment_content, infoFragment);
+        if (searchFragment != null && transaction.isAddToBackStackAllowed()) {
+            transaction.remove(searchFragment);
+        }
+        searchFragment = new AppInfoFragment();
+        Bundle args = new Bundle();
+        args.putString(ApplicationConstant.SEARCH, query);
+        searchFragment.setArguments(args);
+        transaction.add(R.id.fragment_content, searchFragment);
         transaction.commit();
+        searchIsshowing = true;
         viewPager.setVisibility(View.INVISIBLE);
         tabs.setVisibility(View.INVISIBLE);
         return true;
