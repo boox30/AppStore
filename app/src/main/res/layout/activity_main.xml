@@ -47,4 +47,14 @@
         android:id="@+id/fragment_content"
         android:layout_below="@+id/toolbar_layout"
         android:layout_alignParentBottom="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:visibility="visible"
+        android:id="@+id/message_main"
+        android:layout_below="@+id/toolbar_layout"
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>

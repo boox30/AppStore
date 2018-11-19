@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.william.androidsdk.baseui.BaseFragment;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private FrameLayout contentLayout;
     private AppInfoFragment searchFragment;
     private boolean searchIsshowing =  false;
+    private TextView message;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         tabs = findViewById(R.id.tabs);
         viewPager = findViewById(R.id.view_pager);
         contentLayout = findViewById(R.id.fragment_content);
+        message = findViewById(R.id.message_main);
+        message.setText(R.string.loading);
         stepFragmentsWithViewPager();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -131,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         instance.getAppTypeList(this, new LoadFinishCallback() {
             @Override
             public void onLoadDataFinish() {
+                message.setVisibility(View.GONE);
                 List<String> bigTypes = instance.getBigTypes();
                 AppTypeFragment fragment;
                 String type;
@@ -154,7 +159,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        Log.d("tag", "==========query======" + query);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         if (searchFragment != null && transaction.isAddToBackStackAllowed()) {
