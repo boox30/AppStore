@@ -41,7 +41,6 @@ public class AppInfoFragment extends BaseFragment implements XRecyclerView.Loadi
     }
 
     public AppInfoFragment() {
-        Log.d("tag", "=======init AppInfoFragment======");
 
         instance = AppListHelper.getInstance();
     }

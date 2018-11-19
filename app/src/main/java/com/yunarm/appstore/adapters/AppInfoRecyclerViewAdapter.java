@@ -92,7 +92,6 @@ public class AppInfoRecyclerViewAdapter extends BaseRecyclerViewAdapter<AppInfoB
                     public void onDownloadSucc(String localPath) {
                         downLoadButton.setText(getContext().getResources().getString(R.string.installing));
                         //startInstallApk(localPath);
-                        Log.d("tag", "====onDownloadSucc=========" + localPath);
                     }
 
                     @Override

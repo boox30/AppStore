@@ -62,7 +62,6 @@ public class AppTypeFragment extends BaseFragment {
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
-                ToastUtils.showToast(itemView.getContext(), "position:" + position + " "+list.get(position).getName());
                 Intent intent = new Intent();
                 intent.putExtra(ApplicationConstant.TITLE, list.get(position).getName());
                 intent.setClass(getSupportActivity(), AppInfoListActivity.class);
