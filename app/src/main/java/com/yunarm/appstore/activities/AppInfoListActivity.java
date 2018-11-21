@@ -31,6 +31,7 @@ public class AppInfoListActivity extends AppCompatActivity {
     private void initView() {
         tabs = findViewById(R.id.small_type_tabs);
         viewPager = findViewById(R.id.small_type_view_pager);
+        viewPager.setOffscreenPageLimit(3);
         stepFragmentsWithViewPager();
         String title = getIntent().getStringExtra(ApplicationConstant.TITLE);
         ActionBar actionBar = getSupportActionBar();

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -13,21 +14,24 @@ import com.yunarm.appstore.app.AppInstallTaskManagerThread;
 import com.yunarm.appstore.app.ApplicationHelper;
 import com.yunarm.appstore.bean.AppInfoBean;
 import com.yunarm.appstore.events.ClickEvent;
+import com.yunarm.appstore.ftp.DownloadManager;
 
 import java.util.List;
 
 public class AppInfoRecyclerViewAdapter2 extends RecyclerView.Adapter<AppInfoRecyclerViewAdapter2.BaseViewHolder> {
 
+    private final DownloadManager downloadManager;
     private List<AppInfoBean.MessageBean.DataBean> itemDatas;
     private int defaultLayout;
     private Context mContext;
 
-    public AppInfoRecyclerViewAdapter2(int defaultLayout){
+    public AppInfoRecyclerViewAdapter2(int defaultLayout) {
         this.defaultLayout = defaultLayout;
         new Thread(new AppInstallTaskManagerThread()).start();
+        downloadManager = DownloadManager.getInstance();
     }
 
-    public int getItemLayout(AppInfoBean.MessageBean.DataBean itemData){
+    public int getItemLayout(AppInfoBean.MessageBean.DataBean itemData) {
         return defaultLayout;
     }
 
@@ -46,12 +50,15 @@ public class AppInfoRecyclerViewAdapter2 extends RecyclerView.Adapter<AppInfoRec
     @Override
     public void onBindViewHolder(AppInfoRecyclerViewAdapter2.BaseViewHolder holder, int position) {
         AppInfoBean.MessageBean.DataBean dataBean = itemDatas.get(position);
-        holder.binding.setVariable(BR.itemBean, itemDatas.get(position));
+        if (downloadManager.isInTaskList(dataBean)) {
+            dataBean = downloadManager.getDownloadBean(dataBean.getPath());
+        }
+        holder.binding.setVariable(BR.itemBean, dataBean);
         holder.binding.setVariable(BR.clickEvent, new ClickEvent());
         if (ApplicationHelper.isApplicationAvilible(mContext.getPackageManager(), dataBean.getPackageX())) {
-            itemDatas.get(position).setInstallState(mContext.getResources().getString(R.string.uninstall_app));
-        } else {
-            itemDatas.get(position).setInstallState(mContext.getResources().getString(R.string.install_app));
+            dataBean.setInstallState(mContext.getResources().getString(R.string.uninstall_app));
+        } else if (!downloadManager.isInTaskList(dataBean)) {
+            dataBean.setInstallState(mContext.getResources().getString(R.string.install_app));
         }
         holder.binding.executePendingBindings();
     }
@@ -83,7 +90,7 @@ public class AppInfoRecyclerViewAdapter2 extends RecyclerView.Adapter<AppInfoRec
 
         if (itemDatas == null || itemDatas.size() == 0) {
             setData(data);
-        }else {
+        } else {
             itemDatas.addAll(itemDatas.size(), data);
             notifyItemRangeInserted(itemDatas.size() - data.size() + 1, data.size());
         }

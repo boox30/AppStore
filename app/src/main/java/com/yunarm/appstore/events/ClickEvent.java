@@ -4,15 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
 
+import com.william.androidsdk.utils.FileUtils;
 import com.william.androidsdk.utils.ToastUtils;
 import com.yunarm.appstore.AppStoreApplication;
 import com.yunarm.appstore.ApplicationConstant;
 import com.yunarm.appstore.R;
 import com.yunarm.appstore.app.AppInstallManager;
 import com.yunarm.appstore.app.AppInstallTask;
-import com.yunarm.appstore.app.AppInstallTaskManagerThread;
 import com.yunarm.appstore.app.ApplicationHelper;
 import com.yunarm.appstore.bean.AppInfoBean;
+import com.yunarm.appstore.ftp.DownloadManager;
 import com.yunarm.appstore.ftp.FtpConnectStateListener;
 import com.yunarm.appstore.ftp.FtpDownLoadListener;
 import com.yunarm.appstore.ftp.FtpManagerTasks;
@@ -21,9 +22,11 @@ public class ClickEvent {
     private boolean mLoginSucc = false;
     private static final AppInstallManager installManager;
 
+    private static DownloadManager downloadManager;
+
     static {
         installManager = AppInstallManager.getInstance();
-        new Thread(new AppInstallTaskManagerThread()).start();
+        downloadManager = DownloadManager.getInstance();
     }
 
     public void onClick(final AppInfoBean.MessageBean.DataBean bean) {
@@ -67,6 +70,7 @@ public class ClickEvent {
         }
 
         String remotePath = "/app/" + bean.getPath();
+        downloadManager.addToDownloadList(bean);
         ftpManagerTasks.getFtpFileByPathTask(ApplicationConstant.LOCAL_PATH, remotePath, new FtpDownLoadListener() {
             @Override
             public void onDownProgress(int progress) {
@@ -76,6 +80,7 @@ public class ClickEvent {
 
             @Override
             public void onDownloadSucc(String localPath) {
+                downloadManager.removeFromList(bean);
                 bean.setInstallState(context.getResources().getString(R.string.installing));
                 startInstallApk(localPath, bean);
             }
