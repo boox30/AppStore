@@ -145,7 +145,7 @@ public class FTPManager {
             if (currentSize / step != process) {
                 process = currentSize / step;
                 if (process % 10 == 0) {
-                    listener.onDownProgress((int)process);
+                    listener.onDownProgress((int) process);
                     Log.i(TAG, " file name:" + ftpFile.getName() + " 下载进度：" + process);
                 }
             }
@@ -165,31 +165,35 @@ public class FTPManager {
         }
     }
 
-    // 实现下载文件功能，可实现断点下载
-    public synchronized boolean downloadFileByMutiThread(String localPath, String serverPath, FtpDownLoadListener listener)
+
+    /**
+     * 实现下载文件功能，无断点续传,必须每次都重新下载, 取目录下的第一个文件, 即应使该目录只有一个文件
+     *
+     * @param localPath
+     * @param parentPath 服务器上的文件夹路径, 只下载该文件下的第一个文件
+     * @param listener
+     * @return
+     * @throws Exception
+     */
+    public synchronized boolean downloadFileByParentPath(String localPath, String parentPath, FtpDownLoadListener listener)
             throws Exception {
         // 先判断服务器文件是否存在
-        File serverFile = new File(serverPath);
-        ftpClient.changeWorkingDirectory(serverFile.getParentFile().getAbsolutePath());
+        ftpClient.changeWorkingDirectory(parentPath);
         ftpClient.configure(new FTPClientConfig(FTPClientConfig.SYST_UNIX));
         ftpClient.setControlEncoding("UTF-8");
         ftpClient.enterLocalPassiveMode();
+        ftpClient.setConnectTimeout(3000);
         ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
         FTPFile[] files = ftpClient.listFiles();
         if (files.length == 0) {
-            Log.d(TAG, "服务器文件不存在");
+            Log.d(TAG, "服务器文件不存在"+parentPath);
             return false;
         }
-        FTPFile ftpFile = null;
-        for (int i = 0; i < files.length; i++) {
-            String name = serverFile.getName();
-            if (files[i].getName().equals(name)) {
-                ftpFile = files[i];
-                break;
-            }
+        FTPFile ftpFile = files[0];
+        if (ftpFile == null) {
+            Log.e(TAG, "ftpFile is null");
+            return false;
         }
-        Log.d(TAG, "远程文件存在,名字为：" + ftpFile.getName());
-
         //创建本地文件夹
         File mkFile = new File(localPath);
         if (!mkFile.exists()) {
@@ -204,14 +208,7 @@ public class FTPManager {
         File localFile = new File(localFilePath);
         long localSize = 0;
         if (localFile.exists()) {
-            localSize = localFile.length(); // 如果本地文件存在，获取本地文件的长度
-            Log.d(TAG, "=======本地文件存在=====localSize: " + localSize + " serverSize:" + serverSize);
-            if (localSize >= serverSize) {
-                Log.d(TAG, "文件已经下载完了");
-                listener.onDownProgress(100);
-                listener.onDownloadSucc(localFile.getAbsolutePath());
-                return true;
-            }
+            localFile.delete();
         }
         // 进度
         long step = serverSize / 100;
@@ -220,7 +217,8 @@ public class FTPManager {
         // 开始准备下载文件
         OutputStream out = new FileOutputStream(localFile, true);
         ftpClient.setRestartOffset(localSize);
-        InputStream input = ftpClient.retrieveFileStream(serverPath);
+        String remote = parentPath + ftpFile.getName();
+        InputStream input = ftpClient.retrieveFileStream(remote);
         byte[] b = new byte[1024];
         int length = 0;
         while ((length = input.read(b)) != -1) {
@@ -229,8 +227,8 @@ public class FTPManager {
             if (currentSize / step != process) {
                 process = currentSize / step;
                 if (process % 10 == 0) {
-                    listener.onDownProgress((int)process);
-                    Log.d(TAG, "下载进度：" + process);
+                    listener.onDownProgress((int) process);
+                    Log.i(TAG, " file name:" + ftpFile.getName() + " 下载进度：" + process);
                 }
             }
         }
@@ -367,7 +365,7 @@ public class FTPManager {
      * @return true下载成功, false下载失败
      * @throws IOException
      */
-    private boolean downloadSingle(File localFile, FTPFile ftpFile) throws IOException {
+    public boolean downloadSingle(File localFile, FTPFile ftpFile) throws IOException {
         boolean flag;
         // 创建输出流
         OutputStream outputStream = new FileOutputStream(localFile);

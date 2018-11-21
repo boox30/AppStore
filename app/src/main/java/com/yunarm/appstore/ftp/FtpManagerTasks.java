@@ -115,6 +115,65 @@ public class FtpManagerTasks {
                 });
     }
 
+    /**
+     * you need login the ftp first
+     *
+     * @param localPath
+     * @param parentPath
+     * @param listener
+     */
+    @SuppressLint("CheckResult")
+    public void getFtpFileByParentPathTask(final String localPath, final String parentPath, final FtpDownLoadListener listener) {
+        if (!ftpManager.isConnected()) {
+            listener.onDownloadFail();
+            return;
+        }
+        final FtpDownloadResult result = new FtpDownloadResult();
+        Observable
+                .create(new ObservableOnSubscribe<FtpDownloadResult>() {
+                    @Override
+                    public void subscribe(final ObservableEmitter<FtpDownloadResult> emitter) throws Exception {
+                        try {
+                           ftpManager.downloadFileByParentPath(localPath, parentPath, new FtpDownLoadListener() {
+                                @Override
+                                public void onDownProgress(int progress) {
+
+                                }
+
+                                @Override
+                                public void onDownloadSucc(String localPath) {
+                                    result.setLocalFilePath(localPath);
+                                    result.setSuccess(1);
+                                    emitter.onNext(result);
+                                }
+
+                                @Override
+                                public void onDownloadFail() {
+                                    result.setSuccess(0);
+                                    emitter.onNext(result);
+                                }
+                            });
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<FtpDownloadResult>() {
+                    @Override
+                    public void accept(FtpDownloadResult result) throws Exception {
+                        if (result.getSuccess() == 1) {
+                            listener.onDownloadSucc(result.getLocalFilePath());
+                        }
+                        if (result.getSuccess() == 0) {
+                            listener.onDownloadFail();
+                        }
+                    }
+                });
+    }
+
     public boolean isConnected() {
         return ftpManager.isConnected();
     }
