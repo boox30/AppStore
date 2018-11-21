@@ -102,13 +102,7 @@ public class AppListHelper {
                             callback.onLoadDataFinish();
                             return;
                         }
-                        String message1 = postResult.getMessage();
-                        File file = new File("/sdcard/message.txt");
-                        if (!file.exists()) {
-                            file.createNewFile();
-                        }
-                        FileUtils.saveContentToFile(message1, file);
-                        String str = "{\"status\":" + String.valueOf(postResult.isStatus()) + ",\"message\":" + message1 + "}";
+                        String str = "{\"status\":" + String.valueOf(postResult.isStatus()) + ",\"message\":" + postResult.getMessage() + "}";
                         Gson gson = new Gson();
                         AppInfoBean appTypeInfo = gson.fromJson(str, AppInfoBean.class);
                         AppInfoBean.MessageBean message = appTypeInfo.getMessage();
